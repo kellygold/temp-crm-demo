@@ -1,38 +1,33 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Alloy from 'alloy-frontend';
 import styles from './ConnectApp.module.css';
 
 export default function ConnectApp({ onConnectionEstablished }) {
-  useEffect(() => {
-    // Load the Alloy SDK script
-    const loadAlloySDK = () => {
-      const script = document.createElement('script');
-      script.src = "https://cdn.runalloy.com/scripts/embedded.js";
-      script.type = "text/javascript";
-      script.onload = () => console.log("Alloy SDK loaded");
-      document.body.appendChild(script);
-    };
+  const [alloy, setAlloy] = useState(null);
 
-    loadAlloySDK();
+  useEffect(() => {
+    setAlloy(Alloy());
   }, []);
 
   const fetchTokenAndAuthenticate = async () => {
+    if (!alloy) {
+      console.error('Alloy SDK not initialized');
+      return;
+    }
+
     try {
       const response = await axios.get('/api/get-jwt-token');
-      if (window.Alloy) {
-        window.Alloy.setToken(response.data.token);
-        window.Alloy.authenticate({
-          category: 'crm',
-          callback: (data) => {
-            if (data.success) {
-              localStorage.setItem('connectionId', data.connectionId);
-              onConnectionEstablished(data.connectionId);
-            }
+      alloy.setToken(response.data.token);
+      alloy.authenticate({
+        category: 'crm',
+        callback: (data) => {
+          if (data.success) {
+            localStorage.setItem('connectionId', data.connectionId);
+            onConnectionEstablished(data.connectionId);
           }
-        });
-      } else {
-        console.error('Alloy SDK not found');
-      }
+        }
+      });
     } catch (error) {
       console.error('Error fetching JWT token:', error);
     }
