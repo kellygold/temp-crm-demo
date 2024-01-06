@@ -1,4 +1,3 @@
-// pages/api/get-jwt-token.js
 import { Embedded } from 'alloy-node';
 
 const YOUR_API_KEY = process.env.ALLOY_API_KEY;
@@ -8,7 +7,7 @@ export default async function handler(req, res) {
   try {
     const apiClient = new Embedded(YOUR_API_KEY);
     await apiClient.identify(userId);
-    let data = await apiClient.get();
+    let data = await apiClient.Tokens.get();
 
     res.status(200).json({ token: data.token });
   } catch (error) {
