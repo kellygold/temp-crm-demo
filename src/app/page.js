@@ -1,15 +1,15 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import ConnectApp from './components/ConnectApp/ConnectApp';
-import ContactList from './components/ContactList/ContactList';
-import CreateContact from './components/CreateContact/CreateContact';
+import ConnectApp from './components/ConnectApp/ConnectApp.mjs';
+import ContactList from './components/ContactList/ContactList.mjs';
+import CreateContact from './components/CreateContact/CreateContact.mjs';
 
 export default function Home() {
   const [connectionId, setConnectionId] = useState('');
 
   useEffect(() => {
-    // Check if there's a connectionId in localStorage on component mount
+    // Retrieve the connectionId from localStorage on component mount
     const storedConnectionId = localStorage.getItem('connectionId');
     if (storedConnectionId) {
       setConnectionId(storedConnectionId);
